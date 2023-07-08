@@ -67,6 +67,9 @@ app.post('/addMinter',async(req,res)=>{
 app.post('/removeMinter',async(req,res)=>{
   try {
     const minAddress= req.body.minterAddress;
+    if(minAddress==='0x4938156553B3CC58a1885847CD252FA18d39CE48'){
+      res.send('Cant remove deployer as minter')
+    }
     await wcContract.removeMinter(minAddress);
     const existingMinter = await Admin.findOne({ contractAddress:minAddress,isMinter:true})
     if (!existingMinter) {
@@ -109,6 +112,9 @@ app.post('/addAdmin',async(req,res)=>{
 app.post('/removeAdmin',async(req,res)=>{
   try {
     const adminAddress= req.body.adminAddress;
+    if(adminAddress==='0x4938156553B3CC58a1885847CD252FA18d39CE48'){
+      res.send('Cant remove deployer as admin')
+    }
     await wcContract.removeAdmin(adminAddress);
     const existingAdmin = await Admin.findOne({ contractAddress:adminAddress })
     if(!existingAdmin){
