@@ -37,9 +37,26 @@ app.get("/totalSupply", (req, res) => {
   res.send("ok")
 });
 
+// burn amount
+
+app.post('/burnToken',async (req,res)=>{
+  const amount=req.body.burnAmount;
+  await wcContract.burnToken(ethers.utils.parseEther(amount))
+  res.send("okay")
+})
+
+
 app.post("/mint", async (req, res) => {
-  const mintAmount = req.body.energyConsumed;
-  await wcContract.mint(apiAddress, mintAmount);
+  const time=req.body.time;
+  const avgTime=8;//in hours
+  const avgEnergyPerDay=13.4;//in kWh
+  const amountToBeMinted=(((avgEnergyPerDay/avgTime)*time)/1000).toString();
+  const mintAmount = ethers.utils.parseUnits(amountToBeMinted, 18);
+
+  // await wcContract.mint(apiAddress, ethers.utils.parseEther(mintAmount));
+  const tx=await wcContract.mint(apiAddress, mintAmount);
+  await tx.wait(); // Wait for the transaction to be mined and confirmed
+  console.log("Tokens minted successfully!");
   res.send("ok");
 });
 
