@@ -245,7 +245,7 @@ function App() {
         
         {/* show charging function */}
         {
-          showcharger&&!showdashboard&&(<ElectricCharge/>
+          showcharger&&!showdashboard&&(<ElectricCharge currentAccount={currentAccount}/>
             )
         }
 

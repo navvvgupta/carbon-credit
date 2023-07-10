@@ -28,7 +28,7 @@ const signer = new ethers.Wallet(
 );
 const wcContract = new ethers.Contract(contractAddress, abi, signer);
 
-const apiAddress = "0x4938156553B3CC58a1885847CD252FA18d39CE48";
+// const apiAddress = "0x4938156553B3CC58a1885847CD252FA18d39CE48";
 const privKey = process.env.PRIVATE_KEY;
 
 const apiAddressPrivateKey = Buffer.from(privKey, "hex");
@@ -54,7 +54,11 @@ app.post('/burnToken',async (req,res)=>{
 
 
 app.post("/mint", async (req, res) => {
+  
+  try {
+     
   const time=req.body.time;
+  const apiAddress=req.body.apiAddress;
   const avgTime=8;//in hours
   const avgEnergyPerDay=13.4;//in kWh
   const amountToBeMinted=(((avgEnergyPerDay/avgTime)*time)/1000).toString();
@@ -64,7 +68,12 @@ app.post("/mint", async (req, res) => {
   const tx=await wcContract.mint(apiAddress, mintAmount);
   await tx.wait(); // Wait for the transaction to be mined and confirmed
   console.log("Tokens minted successfully!");
-  res.send("ok");
+  res.status(200).json({msg:"okay"})
+    
+  } catch (error) {
+    console.log(error)
+    res.status(400).json({msg:error})
+  }
 });
 
 // add minter function
